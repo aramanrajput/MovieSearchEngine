@@ -62,11 +62,14 @@ async function makeRequest(){
     let moviename =document.getElementById("moviename").value
 
     console.log(moviename)
-    let res = await fetch(` http://www.omdbapi.com/?apikey=e7a03a7f&s=${moviename}`)
-    let data = await res.json()
-    console.log(data.Search[0])
-    let movie = data.Search[0]
-    showMovies(movie)
+    let res = await fetch(` http://www.omdbapi.com/?&i=tt3896198&apikey=e7a03a7f&t=${moviename}`)
+    let data =  await res.json()
+    
+    console.log(data)
+  
+
+   
+    showMovies(data)
    
 }
 
@@ -84,10 +87,12 @@ let year = document.createElement("p")
 year.textContent = "Released :  "+movies.Year
 
 let rating = document.createElement("p")
-rating.textContent = "Rating :  "+movies.imdbID
+rating.textContent = "Rating :  "+movies.Ratings[0].Value
 
+let Genre = document.createElement("p")
+Genre.textContent= "Genre :  "+ movies.Genre
 parent.append(div)
-div.append(image,name,year,rating)
+div.append(image,name,year,rating,Genre)
 
 
 }
