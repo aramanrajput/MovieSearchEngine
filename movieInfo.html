@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <style>
+       body{
+           background-color: whitesmoke;
+       }
+       h1{
+           text-align: center;
+          background-color: teal;
+          font-family: sans-serif;
+          font-size: 60px;
+       }
+       #parent{
+           display: block;
+           width: 400px;
+           margin: auto;
+           margin-top: 20px;
+           
+           padding: 10px;
+       }
+      
+       .box input{
+         width: 98%;
+         height: 30px;
+       }
+       button{
+           width: 99%;
+           height: 40px;
+           margin-top: 10px;
+
+       }
+       #parent img{
+        border: 2px solid grey;
+        padding: 10px;
+       }
+
+   </style> 
+</head>
+<body>
+    
+    <h1>Movie Info App</h1>
+    <div class="box">
+      <input type="text"  name="" id="moviename">
+    <button onclick="makeRequest()">Search </button>  
+    </div>
+    
+    <div id="parent" ></div>
+</body>
+</html>
+<script>
+     //e7a03a7f
+   //  https://www.omdbapi.com/?apikey=[yourkey]&
+
+let parent = document.getElementById("parent")
+  
+async function makeRequest(){
+    let moviename =document.getElementById("moviename").value
+
+    console.log(moviename)
+    let res = await fetch(` http://www.omdbapi.com/?apikey=e7a03a7f&s=${moviename}`)
+    let data = await res.json()
+    console.log(data.Search[0])
+    let movie = data.Search[0]
+    showMovies(movie)
+   
+}
+
+function showMovies(movies){
+    parent.innerHTML=null
+let div = document.createElement("div")
+
+let image = document.createElement("img")
+image.src=movies.Poster
+
+let name = document.createElement("p")
+name.textContent = "Title:   " + movies.Title
+
+let year = document.createElement("p")
+year.textContent = "Released :  "+movies.Year
+
+let rating = document.createElement("p")
+rating.textContent = "Rating :  "+movies.imdbID
+
+parent.append(div)
+div.append(image,name,year,rating)
+
+
+}
+
+
+
+
+</script>
