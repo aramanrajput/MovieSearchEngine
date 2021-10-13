@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <style>
+       body{
+           background-color: whitesmoke;
+       }
+       h1{
+           text-align: center;
+          background-color: teal;
+          font-family: sans-serif;
+          font-size: 60px;
+       }
+       #parent{
+        display: grid;
+    margin: auto;
+    margin-top: 20px;
+    grid-template-columns: 30% 30% 30% ;
+    grid-gap: 3%;
+    padding: 10px;
+       }
+      
+       .box input{
+         width: 98%;
+         height: 30px;
+       }
+       button{
+           width: 99%;
+           height: 40px;
+           margin-top: 10px;
+
+       }
+       #parent img{
+        border: 2px solid grey;
+        padding: 10px;
+        width: 300px;
+        height: 450px;
+        justify-content: center;
+       }
+       #movies {
+        height: 200px;
+
+        width: 99%;
+        border: 1px solid black;
+        overflow: scroll;
+        border-top: none;
+      }
+
+   </style> 
+</head>
+<body>
+    
+    <h1>Movie Info App</h1>
+    <div class="box">
+      <input oninput="debounce(main,1000)" type="text"  name="" id="moviename">
+      <div id="movies"></div>
+    </div>
+    
+    <div id="parent" ></div>
+</body>
+</html>
+<script>
+    var timerID
+     //e7a03a7f
+   //  https://www.omdbapi.com/?apikey=[yourkey]&
+
+let parent = document.getElementById("parent")
+  let movies_div = document.getElementById("movies")
+async function searchMovies(movie_name){
+    
+
+    
+    let res = await fetch(` http://www.omdbapi.com/?&i=tt3896198&apikey=e7a03a7f&s=${movie_name}`)
+    
+    let data =  await res.json()
+    return data
+  
+// if(data.Response=="True"){
+//    showMovies(data) 
+// }
+// else if(data.Response == "False"){
+//     showError()
+// }
+   
+    
+   
+}
+
+function showMovies(movies){
+    parent.innerHTML=null
+    movies_div.innerHTML=null
+console.log(movies)
+    movies.forEach(function(movie){
+        
+let div = document.createElement("div")
+
+let image = document.createElement("img")
+image.src=movie.Poster
+
+let name = document.createElement("p")
+name.textContent = "Title:   " + movie.Title
+
+let year = document.createElement("p")
+year.textContent = "Released :  "+movie.Year
+let p = document.createElement("p")
+p.textContent = movie.Title
+
+let rating = document.createElement("p")
+// rating.textContent = "Rating :  "+movies.imdbRating
+
+
+// if(movies.imdbRating>8.5){
+//     rating.textContent = "Rating :  "+movies.imdbRating + "  Highly Recommended"
+// }
+
+
+parent.append(div)
+ movies_div.append(p)
+div.append(image,name,year)
+    })
+
+
+
+}
+
+
+
+async function main(){
+    let name = document.getElementById('moviename').value
+    if(name.length<3){
+
+return false;
+}
+
+    let res = await searchMovies(name)
+    console.log(res)
+    let movies_data = res.Search
+    console.log(movies_data)
+    showMovies(movies_data)
+}
+
+
+
+function debounce(func,delay){
+
+if(timerID){
+    clearTimeout(timerID)
+}
+
+
+  timerID=  setTimeout(function(){
+
+    func()
+    },delay)
+
+}
+
+
+</script>
