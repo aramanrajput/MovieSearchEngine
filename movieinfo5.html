@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <style>
+
+
+
+       body{
+           background-color: #1c2940;
+           color: whitesmoke;
+           font-family: sans-serif;
+       }
+       h1{
+           text-align: center;
+          
+          font-family: sans-serif;
+          font-size: 60px;
+       }
+       #parent{
+        display: grid;
+    margin: auto;
+    margin-top: 20px;
+    grid-template-columns: 30% 30% 30% ;
+    grid-gap: 3%;
+    padding: 10px;
+       }
+      
+       .box input{
+         width: 98%;
+         height: 30px;
+       }
+       button{
+           width: 99%;
+           height: 40px;
+           margin-top: 10px;
+
+       }
+       #parent img{
+        border: 2px solid grey;
+        padding: 10px;
+        width: 300px;
+        height: 450px;
+        justify-content: center;
+       }
+       #movies {
+        height: 200px;
+
+        width: 99%;
+        border: 1px solid black;
+        overflow: scroll;
+        border-top: none;
+      }
+      #result{
+          display: grid;
+          height: 400px;
+          grid-template-columns: 30% 58%;
+         /* border: 2px solid red; */
+         background-color:#132546 ;
+         
+      }
+      #result:nth-child(2){
+
+        padding: 20px;
+      }
+      .image{
+             /* width: 48%; */
+    width: 243px;
+    padding: 17px;
+      }
+
+   </style> 
+</head>
+<body>
+    
+    <h1>Movie Info App</h1>
+    <div class="box">
+      <input oninput="debounce(main,1000)" type="text"  name="" id="moviename">
+
+      <div id="dropdown"></div>
+    </div>
+    <div id="result"></div>
+    <div id="parent" ></div>
+</body>
+</html>
+<script>
+    var timerID
+     //e7a03a7f
+   //  https://www.omdbapi.com/?apikey=[yourkey]&
+
+let parent = document.getElementById("parent")
+  let movies_div = document.getElementById("movies")
+async function searchMovies(movie_name){
+    
+
+    
+    let res = await fetch(` http://www.omdbapi.com/?&i=tt3896198&apikey=e7a03a7f&s=${movie_name}`)
+    
+    let data =  await res.json()
+    return data
+  
+
+   
+    
+   
+}
+var drop = document.getElementById("dropdown")
+function showMovies(movies){
+    parent.innerHTML=null
+   
+console.log(movies)
+
+let div1 =document.createElement("div")
+div1.setAttribute("id",'movies')
+    movies.forEach(function(movie){
+        
+let div = document.createElement("div")
+
+
+let image = document.createElement("img")
+image.src=movie.Poster
+
+let name = document.createElement("p")
+name.textContent = "Title:   " + movie.Title
+
+let year = document.createElement("p")
+year.textContent = "Released :  "+movie.Year
+let p = document.createElement("p")
+p.textContent = movie.Title
+p.onclick = function(){
+    redirect(p)
+}
+
+let rating = document.createElement("p")
+// rating.textContent = "Rating :  "+movies.imdbRating
+
+
+// if(movies.imdbRating>8.5){
+//     rating.textContent = "Rating :  "+movies.imdbRating + "  Highly Recommended"
+// }
+
+
+parent.append(div)
+drop.append(div1)
+ div1.append(p)
+div.append(image,name,year)
+    })
+
+
+
+}
+
+function showError(){
+    parent.innerHTML=null
+
+let div1 = document.createElement("div")
+
+let image1 = document.createElement("img")
+image1.src="https://media1.giphy.com/media/hS42TuYYnANLFR9IRQ/giphy.gif?cid=6c09b952d7kfjcjmq95xpdxj2t2oczysznih93625vwosnzc&rid=giphy.gif&ct=s" 
+
+parent.append(div1)
+div1.append(image1)
+}
+
+async function main(){
+    let name = document.getElementById('moviename').value
+    if(name.length<3){
+
+return false;
+}
+
+    let res = await searchMovies(name)
+  //  console.log(res)
+    let movies_data = res.Search
+  //  console.log(movies_data)
+    showMovies(movies_data)
+}
+
+
+
+function debounce(func,delay){
+
+if(timerID){
+    clearTimeout(timerID)
+}
+
+
+  timerID=  setTimeout(function(){
+
+    func()
+    },delay)
+
+}
+
+async function redirect(p){
+
+    let res1 = await fetch(` http://www.omdbapi.com/?&i=tt3896198&apikey=e7a03a7f&t=${p.textContent}`)
+    
+    let data1 =  await res1.json()
+   show(data1)
+   console.log(data1)
+}
+
+let box = document.getElementById("result")
+
+function show(movie){
+    box.innerHTML=null
+
+let cont1 = document.createElement("div")
+let cont2 = document.createElement("div")
+
+let name =document.createElement("h2")
+name.textContent = "Title : "+movie.Title
+
+let poster = document.createElement("img")
+poster.src = movie.Poster
+poster.setAttribute("class","image")
+
+let Released = document.createElement("p")
+Released.textContent = "Released :  "+movie.Released
+
+let actors  = document.createElement("p")
+actors.textContent = "Actors :  "+movie.Actors
+
+let genre = document.createElement("p")
+genre.textContent = "Genre : "+movie.Genre
+
+let rating = document.createElement("p")
+rating.textContent = "imdb rating : " + movie.imdbRating
+
+let plot = document.createElement("p")
+plot.textContent= "Plot : "+ movie.Plot
+
+
+box.append(cont1,cont2)
+cont1.append(poster)
+cont2.append(name,plot,Released,actors,genre,rating)
+
+}
+
+
+
+</script>
