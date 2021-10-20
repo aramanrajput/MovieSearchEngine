@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+   <style>
+
+
+
+       body{
+           background-color: #1c2940;
+           color: whitesmoke;
+           font-family: sans-serif;
+       }
+       h1{
+           text-align: center;
+          
+          font-family: sans-serif;
+          font-size: 60px;
+       }
+       #parent{
+        display: grid;
+    margin: auto;
+    margin-top: 20px;
+    grid-template-columns: 30% 30% 30% ;
+    grid-gap: 3%;
+    padding: 10px;
+       }
+      
+       .box input{
+         width: 98%;
+         height: 30px;
+       }
+       .signupbtn{
+    position: absolute;
+    /* left: 58px; */
+    right: 141px;
+    top: 64px;
+    width: 134px;
+    height: 33px;
+}
+.loginbtn{
+  position: absolute;
+    /* left: 58px; */
+    right: 5px;
+    top: 64px;
+    width: 134px;
+    height: 33px;
+}
+#message{
+  color: green;
+  text-align: center;
+}
+#login-form input{
+      
+      width: 80%;
+      height: 30px;
+      display: block;
+     
+      margin: auto auto 28px;
+    }
+   
+       #parent img{
+        border: 2px solid grey;
+        padding: 10px;
+        width: 300px;
+        height: 450px;
+        justify-content: center;
+        
+       }
+    
+       #movies {
+        height: 200px;
+
+        width: 99%;
+        border: 1px solid black;
+        overflow: scroll;
+        border-top: none;
+      }
+      #result{
+          display: grid;
+          height: 400px;
+          grid-template-columns: 30% 58%;
+         /* border: 2px solid red; */
+         background-color:#132546 ;
+         
+      }
+    
+
+      #signup-form input{
+      
+        width: 80%;
+        height: 30px;
+        display: block;
+       
+        margin: auto auto 28px;
+      }
+      #popup{
+        width: 400px;
+        height: 600px;
+display: block;
+        margin: auto;
+        border: 2px solid white;
+      }
+      #popup2{
+        width: 400px;
+        height: 600px;
+display: block;
+        margin: auto;
+        border: 2px solid white;
+      }
+      
+      #result:nth-child(2){
+
+        padding: 20px;
+      }
+      .image{
+             /* width: 48%; */
+    width: 243px;
+    padding: 17px;
+      }
+      #btn{
+       
+    border-radius: 70px;
+    position: absolute;
+    right: 457px;
+    
+
+
+      }
+      #btnx{
+       
+       border-radius: 70px;
+       position: absolute;
+       right: 457px;
+       
+   
+   
+         }
+.admin{
+  
+    text-align: end;
+    margin-right: 147px;
+}
+   </style> 
+</head>
+<body>
+    <div id="cont"></div>
+    <h1>Movie Info App</h1>
+    <button id="btn1" class="signupbtn">signup</button>
+    <button id="btn2" class="loginbtn">login</button>
+    <div id="popup">
+      <div id="signup">
+        <button id="btn" >X</button>
+        <form onsubmit="Signup(event)" id="signup-form">
+          
+            <h1>signup</h1>
+            <h4 id="message"></h4>
+         <input type="text" id="name" placeholder="name" />
+         <input type="text" id="email" placeholder="email" />
+         <input type="password" id="password" placeholder="password" />
+         <input type="text" id="username" placeholder="username" />
+         <input type="text" id="mobile" placeholder="mobile" />
+         <input type="text" id="description" placeholder="description" />
+         <input type="submit"/>
+         
+       </form> 
+
+     </div>
+    </div>
+    <div id="popup2">
+      <div id="login">
+        <button id="btnx" >X</button>
+        <form onsubmit="Login(event)" id="login-form">
+            <h1>login</h1>
+            <h4 id="message2"></h4>
+            <input type="text" id="user" placeholder="username" />
+         <input type="password" id="pass" placeholder="password" />
+         
+        
+         <input type="submit" />
+       </form> 
+     </div> 
+
+    </div>
+    <div class="box">
+      <input oninput="debounce(main,1000)" type="text"  name="" id="moviename">
+
+      <div id="dropdown">
+        
+      </div>
+    </div>
+    <div id="result"></div>
+    <div id="parent" ></div>
+    
+</body>
+</html>
+<script>
+    var timerID
+     //e7a03a7f
+   //  https://www.omdbapi.com/?apikey=[yourkey]&
+  //  var name = document.getElementById('moviename').value
+let parent = document.getElementById("parent")
+  let movies_div = document.getElementById("movies")
+async function searchMovies(movie_name){
+    
+
+    
+    let res = await fetch(` http://www.omdbapi.com/?&i=tt3896198&apikey=e7a03a7f&s=${movie_name}`)
+  
+    let data =  await res.json()
+  //console.log(data.Response)
+if(data.Response=="True"){
+  return data
+}
+else if(data.Response=="False"){
+ showError() 
+ return data
+}
+    
+ 
+    
+  
+     
+ 
+
+   
+    
+   
+}
+
+
+
+
+
+
+var drop = document.getElementById("dropdown")
+function showMovies(movies){
+    parent.innerHTML=null
+    drop.innerHTML=null
+   
+console.log(movies)
+
+let div1 =document.createElement("div")
+div1.setAttribute("id",'movies')
+    movies.forEach(function(movie){
+        
+let div = document.createElement("div")
+
+
+let image = document.createElement("img")
+image.src=movie.Poster
+
+let name = document.createElement("p")
+name.textContent = "Title:   " + movie.Title
+
+let year = document.createElement("p")
+year.textContent = "Released :  "+movie.Year
+let p = document.createElement("p")
+p.textContent = movie.Title
+p.onclick = function(){
+    redirect(p)
+}
+
+let rating = document.createElement("p")
+
+
+parent.append(div)
+drop.append(div1)
+ div1.append(p)
+div.append(image,name,year)
+    })
+
+
+
+}
+
+function showError(){
+    drop.innerHTML=null
+console.log("helo")
+let div1 = document.createElement("div")
+let p = document.createElement("p")
+p.innerText = "movie not found"
+let image1 = document.createElement("img")
+image1.src="https://media1.giphy.com/media/hS42TuYYnANLFR9IRQ/giphy.gif?cid=6c09b952d7kfjcjmq95xpdxj2t2oczysznih93625vwosnzc&rid=giphy.gif&ct=s" 
+
+drop.append(div1)
+div1.append(p,image1)
+}
+
+async function main(){
+
+    let name = document.getElementById('moviename').value
+    if(name.length<3){
+
+return false;
+}
+
+    let res = await searchMovies(name)
+    
+   console.log(res.Response)
+    let movies_data = res.Search
+  //  console.log(movies_data)
+  if(res.Response=="True"){
+     showMovies(movies_data)
+  }
+    
+ 
+   
+}
+
+
+
+function debounce(func,delay){
+
+if(timerID){
+    clearTimeout(timerID)
+}
+
+
+  timerID=  setTimeout(function(){
+
+    func()
+    },delay)
+
+}
+
+async function redirect(p){
+
+    let res1 = await fetch(` http://www.omdbapi.com/?&i=tt3896198&apikey=e7a03a7f&t=${p.textContent}`)
+    
+    let data1 =  await res1.json()
+   show(data1)
+ //  console.log(data1)
+}
+
+let box = document.getElementById("result")
+
+function show(movie){
+    box.innerHTML=null
+
+let cont1 = document.createElement("div")
+let cont2 = document.createElement("div")
+
+let name =document.createElement("h2")
+name.textContent = "Title : "+movie.Title
+
+let poster = document.createElement("img")
+poster.src = movie.Poster
+poster.setAttribute("class","image")
+
+let Released = document.createElement("p")
+Released.textContent = "Released :  "+movie.Released
+
+let actors  = document.createElement("p")
+actors.textContent = "Actors :  "+movie.Actors
+
+let genre = document.createElement("p")
+genre.textContent = "Genre : "+movie.Genre
+
+let rating = document.createElement("p")
+rating.textContent = "imdb rating : " + movie.imdbRating
+
+let plot = document.createElement("p")
+plot.textContent= "Plot : "+ movie.Plot
+
+
+box.append(cont1,cont2)
+cont1.append(poster)
+cont2.append(name,plot,Released,actors,genre,rating)
+
+}
+
+async function popular(movie_name){
+    
+
+    
+    let res = await fetch(`https://api.themoviedb.org/3/movie/popular?&//image.tmdb.org/t/p/w500/wwemzKWzjKYJFfCeiB57q3r4Bcm.png&api_key=273792d52a971113171e057acd1b7851`)
+    
+    let data =  await res.json()
+   let movie = (data.results)
+  //console.log(data.results)
+appendpopular(movie)
+   
+    
+   
+}
+
+popular()
+var count = 0
+
+function appendpopular(movies){
+   
+  movies.forEach(function(movie){
+count++
+    let div = document.createElement("div")
+    
+ var heading = document.createElement("h1")
+    heading.textContent="Popular Movies"
+
+    let name = document.createElement("h2")
+
+    name.textContent = movie.original_title
+
+let overview = document.createElement("p")
+overview.textContent = "Overview  : "+movie.overview
+
+let image = document.createElement("img")
+let url = "https://image.tmdb.org/t/p/w500/"
+
+let poster =  movie.poster_path
+let result= url.concat("",poster)
+image.src=result
+
+
+parent.append(div)
+
+div.append(image,name,overview)
+
+
+  })
+  
+  
+}
+
+
+let admin = document.createElement("h4")
+admin.setAttribute("class","admin")
+admin.textContent = ""
+console.log(admin)
+let cont = document.getElementById('cont')
+cont.append(admin)
+
+let message = document.getElementById("message")
+
+
+let name = document.getElementById("name").value
+let email = document.getElementById("email").value
+let password = document.getElementById("password").value
+
+let username = document.getElementById("username").value
+
+let mobile = document.getElementById("mobile").value
+
+let description = document.getElementById("description").value
+
+function Signup(e){
+    e.preventDefault();
+
+    let form =document.getElementById("signup-form")
+
+    let user_data = {
+        name:form.name.value,
+        email:form.email.value,
+        password:form.password.value,
+        username:form.username.value,
+        mobile:form.mobile.value,
+        description:form.description.value,
+    }
+    // console.log(user_data)
+let nm = user_data.name
+  
+
+  user_data = JSON.stringify(user_data)
+
+
+
+
+
+
+
+
+
+fetch("https://masai-api-mocker.herokuapp.com/auth/register",{
+
+method:"POST",
+
+body:user_data,
+
+headers:{
+"Content-Type": "application/json",
+},
+
+
+})  
+.then((res) =>{
+    return res.json();
+})
+.then((res) =>{
+     console.log(res)
+     if(res.error==false){
+      admin.textContent = nm 
+      message.style.margin="0"
+      message.textContent = "sign up sucessfull"
+     }
+     else{
+       message.style.color = "red"
+       message.style.margin="0"
+      message.textContent = "sign up failed"
+
+     }
+   
+
+
+})
+.catch((err)=>{
+   console.log(err) 
+   
+})
+}
+let message2 = document.getElementById("message2")
+
+function Login(e){
+    e.preventDefault();
+
+let form =document.getElementById("login-form")
+
+let user_data = {
+    username:form.user.value,
+    password:form.pass.value,
+    
+   
+}
+let lu = user_data.username
+let data_to_send = JSON.stringify(user_data)
+console.log(data_to_send) 
+
+fetch("https://masai-api-mocker.herokuapp.com/auth/login",{
+
+method:"POST",
+
+body:data_to_send,
+
+headers:{
+"Content-Type": "application/json",
+},
+
+
+})  
+.then((res) =>{
+    return res.json();
+})
+.then((res) =>{
+    console.log(res)
+    if(res.error==false){
+      admin.textContent =lu 
+      message2.style.margin="0"
+      message2.style.textAlign = "center"
+      message2.style.color = "green"
+      message2.textContent = "log in sucessfull"
+     }
+     else{
+      admin.textContent =""
+      message2.style.textAlign = "center"
+      message2.style.margin="0"
+      message2.style.color = "red"
+      message2.textContent = "log in unsucessfull"
+     }
+})
+
+
+
+
+
+.catch((err)=>{
+  console.log(err)  
+})
+
+
+
+}
+
+
+
+let popup = document.getElementById('popup')
+popup.style.display="none"
+
+let popup2 = document.getElementById('popup2')
+popup2.style.display="none"
+
+console.log(popup)
+let button = document.getElementById('btn')
+let buttonx = document.getElementById('btnx')
+console.log(button)
+button.addEventListener("click",close)
+function close(){
+  console.log("hello")
+  popup.style.display="none"
+}
+buttonx.addEventListener("click",closex)
+function closex(){
+  console.log("hello")
+  popup2.style.display="none"
+}
+let signupbtn = document.getElementById('btn1')
+signupbtn.addEventListener("click",display)
+function display(){
+  popup2.style.display="none"
+  popup.style.display="block"
+}
+let loginbtn = document.getElementById('btn2')
+loginbtn.addEventListener("click",display2)
+function display2(){
+  popup.style.display="none"
+  popup2.style.display="block"
+}
+
+
+</script>
+// <!-- api_key=273792d52a971113171e057acd1b7851 -->
+// <!-- https://image.tmdb.org/t/p/w500/wwemzKWzjKYJFfCeiB57q3r4Bcm.png -->
